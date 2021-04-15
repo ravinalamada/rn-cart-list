@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, Platform} from 'react-native'
 
 const styles = StyleSheet.create({
