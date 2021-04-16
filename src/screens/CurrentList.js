@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, ScrollView, FlatList, KeyboardAvoidingView } from 'react-native'
+import { View, Text, SafeAreaView, FlatList, KeyboardAvoidingView } from 'react-native'
 import nachos from '../data/nachos';
 import {v4 as uuid } from 'uuid';
 import ListItem, {Separator} from '../components/ListItem';
@@ -20,6 +20,8 @@ export default () => {
                 name={item.name}
                 onFavoritePress={() => alert('todo: handle favorite')}
                 isFavorite={index < 2}
+                onAddedSwipe={() => alert('todo: on added swipe')}
+                onDeleteSwipe={() => alert('todo: on delete swipe')}
               />
           )}
           KeyExtractor={(item) => item.id}
