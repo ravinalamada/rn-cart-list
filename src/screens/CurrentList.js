@@ -12,7 +12,7 @@ import ListItem, {Separator} from '../components/ListItem';
 import AddItem from '../components/addItem';
 import {useCurrentList} from '../util/ListManager';
 
-export default () => {
+export default  ({ navigation}) => {
 
   const {
     list,
@@ -45,6 +45,9 @@ export default () => {
                 isFavorite={index < 2}
                 onAddedSwipe={() => removeItem(item.id)}
                 onDeleteSwipe={() => removeItem(item.id)}
+                onRowPress = {() => {
+                  navigation.navigate('ItemDetails')
+                }}
               />
           )}
           KeyExtractor={(item) => item.id}
