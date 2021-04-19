@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View,
+         SectionList,
          Text,
          SafeAreaView,
          FlatList,
          KeyboardAvoidingView,
          ActivityIndicator } from 'react-native'
-// import nachos from '../data/nachos';
-import {v4 as uuid } from 'uuid';
 import AsyncStorage from '@react-native-community/async-storage';
-import ListItem, {Separator} from '../components/ListItem';
+import ListItem, {Separator, SectionHeader} from '../components/ListItem';
 import AddItem from '../components/addItem';
 import {useCurrentList} from '../util/ListManager';
 
@@ -18,7 +17,10 @@ export default  ({ navigation}) => {
     list,
     loading,
     addItem,
-    removeItem} = useCurrentList()
+    removeItem,
+    cart,
+    addToCart
+  } = useCurrentList()
 
   if(loading) {
     return (
@@ -30,20 +32,28 @@ export default  ({ navigation}) => {
     )
   }
 
+  console.log('cart', cart);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <KeyboardAvoidingView
          style={{flex: 1}}
          behavior="padding"
       >
-        <FlatList
-          data={list}
+        <SectionList
+          sections={[
+            {title: 'List', data: list},
+            {title:'Cart', data: cart}
+          ]}
+            renderSectionHeader={({section}) => {
+              <SectionHeader title={section.title} />
+            }}
             renderItem={({item, index}) => (
               <ListItem
                 name={item.name}
                 onFavoritePress={() => alert('todo: handle favorite')}
                 isFavorite={index < 2}
-                onAddedSwipe={() => removeItem(item.id)}
+                onAddedSwipe={() => addToCart(item)}
                 onDeleteSwipe={() => removeItem(item.id)}
                 onRowPress = {() => {
                   navigation.navigate('ItemDetails', {item})

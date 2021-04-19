@@ -5,10 +5,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 const updateStoredCurrentList = (list) => {
   AsyncStorage.setItem('@@GroceryList/currentList', JSON.stringify(list));
 }
+const updateStoredCurrentCart = (cart) => {
+  AsyncStorage.setItem('@@GroceryList/currentCart', JSON.stringify(cart));
+}
 
 export const useCurrentList = () => {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState([]);
 
   const addItem = (text) => {
     const newList = [{id: uuid(), name: text},...list];
@@ -22,13 +26,26 @@ export const useCurrentList = () => {
     updateStoredCurrentList(newList)
   }
 
+  const addToCart = (item) => {
+    removeItem(item.id)
+    const newCart = [item,...cart];
+    setCart(newCart);
+    updateStoredCurrentCart(newCart)
+  }
+
   useEffect(() => {
     setTimeout(() => {
-      AsyncStorage.getItem('@@GroceryList/currentList')
-      .then(data => JSON.parse(data))
-      .then(data => {
-        if(data) {
-          setList(data);
+      Promise.all([
+        AsyncStorage.getItem('@@GroceryList/currentList'),
+        AsyncStorage.getItem('@@GroceryList/currentCart'),
+      ])
+      .then(([list, cartItems]) => [JSON.parse(list), JSON.parse(cartItems)])
+      .then(([list, cartItems]) => {
+        if(list) {
+          setList(list);
+        }
+        if(cartItems) {
+          setCart(cartItems)
         }
         setLoading(false)
       })
@@ -39,6 +56,8 @@ export const useCurrentList = () => {
     list,
     loading,
     addItem,
-    removeItem
+    removeItem,
+    cart,
+    addToCart
   }
 }
